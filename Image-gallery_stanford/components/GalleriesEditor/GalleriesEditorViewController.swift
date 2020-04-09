@@ -15,6 +15,8 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
         return editor
     }()
     
+    private weak var currentPresenter: GalleryPresenter?
+    
     @IBAction func onAddNewImageGallery(_ sender: Any) {
         editor.createGallery(withName: "New gallery \(editor.galleries.count)")
     }
@@ -85,9 +87,11 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
             case "ShowImageGallery":
-                let imageGalleryVC = (segue.destination as? UINavigationController)?.viewControllers.first as! GalleryPresenterViewController
+                let galleryPresenterVC = (segue.destination as? UINavigationController)?.viewControllers.first as! GalleryPresenterViewController
                 let indexCell = (view as! UITableView).indexPath(for: sender as! UITableViewCell)!.row
-                //imageGalleryVC.imageGallery = galleriesEditor.galleries[indexCell]
+                let presenter = GalleryPresenter(withGalleryId: editor.galleries[indexCell].id)
+                currentPresenter = presenter
+                galleryPresenterVC.presenter = presenter
             default:
                 break
         }

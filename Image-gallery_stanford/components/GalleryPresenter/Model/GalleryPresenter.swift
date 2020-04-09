@@ -18,11 +18,13 @@ class GalleryPresenter {
         case imageAdded(byIndex: Int)
         case imagesDeleted(byIndices: [Int])
         case imageMoved(firstIndex: Int, secondIndex: Int)
-        case galleryRenamed
+        case galleryNameUpdated
     }
     
+    private unowned var storage = AppContext.galleryStorage
     private var galleryId: Int
     private(set) var images: [Image] = []
+    private(set) var galleryName: String!
     private var observers = [GalleryPresenterObserver]()
     
     func subscribe(_ observer: GalleryPresenterObserver) {
@@ -45,7 +47,15 @@ class GalleryPresenter {
         galleryId = id
     }
     
-    func fetchImages() {}
+    func fetchInitialData() {
+        fetchGalleryName()
+    }
     
-    func fetchGalleryName() {}
+    func fetchGalleryName() {
+        storage.getGallery(byId: galleryId) { [weak self] gallery in
+            guard let gallery = gallery else { fatalError("Error in function \(#function): Gallery doesn't exist") }
+            self?.galleryName = gallery.data.name
+            notifyAll(with: [.galleryNameUpdated])
+        }
+    }
 }

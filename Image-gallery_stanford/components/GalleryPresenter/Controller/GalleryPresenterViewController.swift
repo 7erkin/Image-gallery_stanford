@@ -8,9 +8,10 @@
 
 import UIKit
 
-class GalleryPresenterViewController: UIViewController, UICollectionViewDelegate,
-UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate {
-    weak var presenter: GalleryPresenter!
+class GalleryPresenterViewController: UIViewController, UICollectionViewDelegate {
+    var presenter: GalleryPresenter! {
+        didSet { self.presenter.subscribe(self) }
+    }
     
     @IBOutlet var fetchingImageIndicator: UIActivityIndicatorView! {
         didSet {
@@ -47,19 +48,18 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
         super.viewDidLoad()
         if presenter == nil {
             self.collectionView.backgroundView = placeholderView
-        } else {
-            presenter.fetchGalleryName()
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         if presenter != nil {
             fetchingImageIndicator.startAnimating()
-            presenter.fetchImages()
+            presenter.fetchInitialData()
         }
     }
-    
-    // MARK: - UICollectionViewDataSource impl
+}
+
+extension GalleryPresenterViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return presenter?.images.count ?? 0
     }
@@ -69,8 +69,22 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
         cell.url = presenter.images[indexPath.row].data.url
         return cell
     }
+}
+
+extension GalleryPresenterViewController: UICollectionViewDragDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let itemProvider = NSItemProvider(object: NSAttributedString()) // mock in object. Pass smth - have no sence, so what to pass then?
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        session.localContext = collectionView
+        return [dragItem]
+    }
     
-    // MARK: - UICollectionViewDropDelegate
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+}
+
+extension GalleryPresenterViewController: UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
         for item in coordinator.items {
             let handler = item.sourceIndexPath == nil ? performExternalDrop : performInternalDrop
@@ -78,15 +92,24 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
         }
     }
     
-    private func performInternalDrop(_ item: UICollectionViewDropItem, _ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
-        
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        let operation: UIDropOperation = (session.localDragSession?.localContext as? UICollectionView) == collectionView ? .move : .copy
+        return UICollectionViewDropProposal(operation: operation, intent: .insertAtDestinationIndexPath)
     }
     
+    func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
+        return session.canLoadObjects(ofClass: URL.self) || session.canLoadObjects(ofClass: UIImage.self)
+    }
+        
+    private func performInternalDrop(_ item: UICollectionViewDropItem, _ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+            
+    }
+        
     private func performExternalDrop(_ item: UICollectionViewDropItem, _ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
         let destinationIndexPath: IndexPath = coordinator.destinationIndexPath ?? IndexPath(row: 0, section: 0)
         let placeholderCell = UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath, reuseIdentifier: "PlaceholderCell")
         let placeholderContext = coordinator.drop(item.dragItem, to: placeholderCell)
-        
+            
         // Weird decision
         var aspectRatio: Float?
         var imageUrl: URL?
@@ -103,12 +126,12 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
                 if let url = provider {
                     imageUrl = url.imageURL
                 }
-                
+                    
                 if let aspectRatio = aspectRatio, let imageUrl = imageUrl {
                     /* IF UPDATING DATASOURCE IS ASYNC?!?!?! */
                     placeholderContext.commitInsertion { indexPath in
-//                        let imageItem = ImageItem(url: imageUrl, aspectRatio: aspectRatio)
-//                        self.imageGallery.add(imageItem, at: indexPath.row)
+    //                       let imageItem = ImageItem(url: imageUrl, aspectRatio: aspectRatio)
+    //                       self.imageGallery.add(imageItem, at: indexPath.row)
                     }
                 } else {
                     placeholderContext.deletePlaceholder()
@@ -116,25 +139,17 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
             }
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        let operation: UIDropOperation = (session.localDragSession?.localContext as? UICollectionView) == collectionView ? .move : .copy
-        return UICollectionViewDropProposal(operation: operation, intent: .insertAtDestinationIndexPath)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
-        return session.canLoadObjects(ofClass: URL.self) || session.canLoadObjects(ofClass: UIImage.self)
-    }
-    
-    // MARK: - UICollectionViewDragDelegate impl
-    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        let itemProvider = NSItemProvider(object: NSAttributedString()) // mock in object. Pass smth - have no sence, so what to pass then?
-        let dragItem = UIDragItem(itemProvider: itemProvider)
-        session.localContext = collectionView
-        return [dragItem]
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        return true
+}
+
+extension GalleryPresenterViewController: GalleryPresenterObserver {
+    func notify(with events: [GalleryPresenter.Event]) {
+        for event in events {
+            switch event {
+            case .galleryNameUpdated:
+                navigationItem.title = presenter.galleryName
+            default:
+                break
+            }
+        }
     }
 }

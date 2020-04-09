@@ -49,7 +49,7 @@ class GalleriesEditor {
     // any memory leak?
     private var observers = [GalleriesEditorObserver]()
     
-    unowned var storage = GalleryRamStorage.shared
+    unowned var storage = AppContext.galleryStorage
     
     func subscribe(_ observer: GalleriesEditorObserver) {
         if observers.firstIndex(where: { $0 === observer }) == nil {
