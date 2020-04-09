@@ -31,13 +31,13 @@ extension GalleriesEditor {
 }
 
 class GalleriesEditor {
-    private(set) var galleries: [GalleryStorage.Gallery] = []
-    private(set) var recentlyDeletedGalleries: [GalleryStorage.Gallery] = []
+    private(set) var galleries: [GalleryRamStorage.Gallery] = []
+    private(set) var recentlyDeletedGalleries: [GalleryRamStorage.Gallery] = []
     
     // memory leak? Whether Observer deinit is called before?
     private var observers = [GalleriesEditorObserver]()
     
-    unowned var storage = GalleryStorage.shared
+    unowned var storage = GalleryRamStorage.shared
     
     func subscribe(_ observer: GalleriesEditorObserver) {
         if observers.firstIndex(where: { $0 === observer }) == nil {
@@ -126,8 +126,8 @@ class GalleriesEditor {
     func swapGalleries() {}
 }
 
-extension Array where Element == GalleryStorage.Gallery {
-    var orderedByIndexInCollection: [GalleryStorage.Gallery] {
+extension Array where Element == GalleryRamStorage.Gallery {
+    var orderedByIndexInCollection: [GalleryRamStorage.Gallery] {
         return self.sorted(by: { $0.data.indexInCollection > $1.data.indexInCollection })
     }
 }

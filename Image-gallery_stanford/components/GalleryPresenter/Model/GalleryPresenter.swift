@@ -23,7 +23,7 @@ class GalleryPresenter: GalleryStorageObserver {
     
     private var galleryId: Int
     
-    private(set) var gallery: GalleryStorage.Gallery!
+    private(set) var gallery: GalleryRamStorage.Gallery!
     
     private var observers = [GalleryPresenterObserver]()
     
@@ -48,29 +48,29 @@ class GalleryPresenter: GalleryStorageObserver {
     }
     
     deinit {
-        GalleryStorage.shared.unsubscribe(self)
+        GalleryRamStorage.shared.unsubscribe(self)
     }
     
     func upload() {
-        GalleryStorage.shared.getGalleryBy(id: galleryId) {[weak self] gallery in
+        GalleryRamStorage.shared.getGalleryBy(id: galleryId) {[weak self] gallery in
             guard let self = self else { return }
             guard let gallery = gallery else { fatalError("Unexpected behaviour") }
             self.gallery = gallery
-            GalleryStorage.shared.subscribe(self)
+            GalleryRamStorage.shared.subscribe(self)
             notifyAll(with: [.uploaded])
         }
     }
     
-    func add(_ image: GalleryStorage.Image, at index: Int) {
+    func add(_ image: GalleryRamStorage.Image, at index: Int) {
     }
     
     // MARK: - GalleryStorageObserver impl
-    func notify(with events: [GalleryStorage.Event]) {
+    func notify(with events: [GalleryRamStorage.Event]) {
         for event in events {
             switch event {
             case .galleryRenamed(let id):
                 if gallery.id == id {
-                    GalleryStorage.shared.getGalleryBy(id: id) { [weak self] gallery in
+                    GalleryRamStorage.shared.getGalleryBy(id: id) { [weak self] gallery in
                         guard let gallery = gallery else { fatalError() }
                         self?.gallery.name = gallery.name
                         notifyAll(with: [.galleryRenamed])
