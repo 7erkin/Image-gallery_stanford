@@ -8,82 +8,75 @@
 
 import Foundation
 
-protocol GalleryStorageObserver: class {
-    func notify(with events: [GalleryStorage.Event])
-}
-
 extension GalleryStorage {
-    struct Image {
+    struct ImageData {
         var url: URL
         var aspectRatio: Float
+        var indexInCollection: Int
+    }
+    
+    struct Image {
+        var id: Int
+        var data: ImageData
+    }
+    
+    struct GalleryData {
+        var name: String
+        var images: [Image]
+        var indexInCollection: Int
     }
     
     struct Gallery {
         var id: Int
-        var name: String
-        var images: [Image]
+        var data: GalleryData
     }
 }
 
 class GalleryStorage {
-    enum Event {
-        case galleryRemoved(id: Int)
-        case galleryCreated(id: Int)
-        case galleryRenamed(id: Int)
-    }
-    
-    var observers = [GalleryStorageObserver]()
-    
-    func subscribe(_ observer: GalleryStorageObserver) {
-        if observers.firstIndex(where: { $0 === observer }) == nil {
-            observers.append(observer)
-        }
-    }
-    
-    func unsubscribe(_ observer: GalleryStorageObserver) {
-        if let index = observers.firstIndex(where: { $0 === observer }) {
-            observers.remove(at: index)
-        }
-    }
-    
-    func notifyAll(with events: [Event]) {
-        observers.forEach { $0.notify(with: events) }
-    }
-    
     private var galleries: [Gallery] = [
-        .init(id: 0, name: "Gallery1", images: []),
-        .init(id: 1, name: "Gallery2", images: []),
-        .init(id: 2, name: "Gallery3", images: [])
+        .init(id: 0, data: .init(name: "Gallery1", images: [], indexInCollection: 0)),
+        .init(id: 1, data: .init(name: "Gallery2", images: [], indexInCollection: 1)),
+        .init(id: 2, data: .init(name: "Gallery3", images: [], indexInCollection: 2))
     ]
+    
+    private var recentlyDeletedGalleries: [Gallery] = []
     
     static var shared = GalleryStorage()
     
     private init() {}
     
+    // MARK: - GalleriesAPI
     func getGalleries(_ completion: ([Gallery]) -> Void) {
         completion(galleries)
+    }
+    
+    func getRecentlyDeletedGalleries(_ completion: ([Gallery]) -> Void) {
+        completion(recentlyDeletedGalleries)
     }
     
     func getGalleryBy(id: Int, _ completion: ((Gallery?) -> Void)) {
         completion(galleries.first(where: { $0.id == id }))
     }
     
-    func createGallery(withName name: String) {
-        let id = galleries.count
-        galleries.append(.init(id: id, name: name, images: []))
-        notifyAll(with: [.galleryCreated(id: id)])
+    func restoreGallery(byGalleryId id: Int, _ completion: (Bool, Gallery?) -> Void) {}
+    
+    func create(gallery galleryData: GalleryData, _ completion: (Bool, Gallery?) -> Void) {
+        
     }
     
-    func deleteGallery(by id: Int) {
-        if let index = galleries.firstIndex(where: { $0.id == id }) {
-            notifyAll(with: [.galleryRemoved(id: index)])
-        }
+    func deleteGallery(byGalleryId id: Int, _ completion: (Bool) -> Void) {
     }
     
-    func updateGallery(_ gallery: Gallery) {
-        if let index = galleries.firstIndex(where: { $0.id == gallery.id }) {
-            galleries[index] = gallery
-            notifyAll(with: [.galleryRenamed(id: gallery.id)])
-        }
-    }
+    func deleteGalleryPermanently(byGalleryId id: Int, _ completion: (Bool) -> Void) {}
+    
+    func renameGallery(byGalleryId id: Int, withName name: String, _ completion: (Bool) -> Void) {}
+    
+    func swapGalleries(firstGalleryId: Int, secondGalleryId: Int, _ completion: (Bool) -> Void) {}
+    
+    // MARK: - ImagesAPI
+    func create(image imageData: ImageData) {}
+    
+    func deleteImage(byImageId id: Int) {}
+    
+    func swapImages(firstImageId: Int, secondImageId: Int) {}
 }
