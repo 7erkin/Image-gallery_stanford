@@ -40,15 +40,15 @@ struct Gallery {
     var data: GalleryData
 }
 
-protocol GalleryStoragable {
+protocol GalleryStoragable: class {
     static var shared: GalleryStoragable { get }
     // GalleriesAPI
     func getGalleries(_ completion: ([Gallery]) -> Void)
     func getGallery(byId id: Int, _ completion: (Gallery?) -> Void)
     func getRecentlyDeletedGalleries(_ completion: ([Gallery]) -> Void)
-    func restoreGallery(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void)
-    func deleteGallery(byId id: Int, _ completion: (Bool) -> Void)
-    func deleteGalleryPermanently(byId id: Int, _ completion: (Bool) -> Void)
+    func restoreGallery(byId id: Int, _ completion: (Bool) -> Void)
+    func deleteGallery(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void)
+    func deleteGalleryPermanently(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void)
     func createGallery(withName name: String, _ completion: (Bool, [Gallery]?) -> Void)
     func renameGallery(byId id: Int, withName name: String, _ completion: (Bool) -> Void)
     func moveGallery(byId movedGalleryId: Int, onPlaceWhereGalleryWithId takingPlaceGalleryId: Int, _ completion: (Bool) -> Void)
@@ -82,33 +82,33 @@ class GalleryRamStorage: GalleryStoragable {
         completion(false, nil)
     }
     
-    func restoreGallery(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void) {
+    func restoreGallery(byId id: Int, _ completion: (Bool) -> Void) {
         if let index = recentlyDeletedGalleries.firstIndex(where: { $0.id == id }) {
             let gallery = recentlyDeletedGalleries.remove(at: index)
             galleries.append(gallery)
+            completion(true)
+            return
+        }
+        completion(false)
+    }
+    
+    func deleteGallery(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void) {
+        if let index = galleries.firstIndex(where: { $0.id == id }) {
+            let gallery = galleries.remove(at: index)
+            recentlyDeletedGalleries.append(gallery)
             completion(true, galleries)
             return
         }
         completion(false, nil)
     }
     
-    func deleteGallery(byId id: Int, _ completion: (Bool) -> Void) {
-        if let index = galleries.firstIndex(where: { $0.id == id }) {
-            let gallery = galleries.remove(at: index)
-            recentlyDeletedGalleries.append(gallery)
-            completion(true)
-            return
-        }
-        completion(false)
-    }
-    
-    func deleteGalleryPermanently(byId id: Int, _ completion: (Bool) -> Void) {
+    func deleteGalleryPermanently(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void) {
         if let index = recentlyDeletedGalleries.firstIndex(where: { $0.id == id }) {
             recentlyDeletedGalleries.remove(at: index)
-            completion(true)
+            completion(true, recentlyDeletedGalleries)
             return
         }
-        completion(false)
+        completion(false, nil)
     }
     
     func renameGallery(byId id: Int, withName name: String, _ completion: (Bool) -> Void) {

@@ -8,90 +8,23 @@
 
 import UIKit
 
-/* Need to make cool layout */
-private class ImageGalleryLayout {
-    private var indexColumnCount: Int
-    private var availableColumnCount: [Int]
-    var columns: Int {
-        return availableColumnCount[indexColumnCount]
-    }
-    init(availableColumnCount: [Int], indexInitialColumnCount: Int) {
-        indexColumnCount = indexInitialColumnCount
-        self.availableColumnCount = availableColumnCount
-    }
-    func imageWidth(boundsWidth width: CGFloat) -> CGFloat {
-        return (width - CGFloat(columns - 1) * spaceBetweenColumns(boundsWidth: width)) / CGFloat(columns)
-    }
-    func spaceBetweenColumns(boundsWidth width: CGFloat) -> CGFloat {
-        return 10
-    }
-    func spaceBetweenRows(boundsWidth width: CGFloat) -> CGFloat {
-        return 10
-    }
-    func increaseColumns() {
-        if indexColumnCount + 1 < availableColumnCount.count {
-            indexColumnCount += 1
-        }
-    }
-    func descreaseColumns() {
-        if indexColumnCount != 0 {
-            indexColumnCount -= 1
-        }
-    }
-}
-
 class GalleryPresenterViewController: UIViewController, UICollectionViewDelegate,
 UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDragDelegate {
-    var imageGallery: ImageGallery! {
+    weak var presenter: GalleryPresenter!
+    
+    @IBOutlet var fetchingImageIndicator: UIActivityIndicatorView! {
         didSet {
-            navigationItem.title = self.imageGallery.name
-            self.imageGallery.update += [{[weak self] whatHappened in
-                DispatchQueue.main.async {
-                    for evt in whatHappened {
-                        switch evt {
-                            case .added(let index):
-                                break
-                            case .removed(let index):
-                                break
-                            case .renamed:
-                                self?.navigationItem.title = self?.imageGallery.name
-                                break
-                            case .swapped(let firstIndex, let secondIndex):
-                                break
-                        case .deleted:
-                            break
-                        }
-                    }
-                }
-            }]
+            self.fetchingImageIndicator.hidesWhenStopped = true
         }
     }
     
     @IBOutlet var collectionView: UICollectionView! {
         didSet {
+            self.collectionView.isHidden = true
             self.collectionView.dataSource = self
             self.collectionView.dropDelegate = self
             self.collectionView.delegate = self
             self.collectionView.dragDelegate = self
-            
-            let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(onPinchHappened(_:)))
-            self.collectionView.addGestureRecognizer(pinchGesture)
-        }
-    }
-    private var galleryLayout = ImageGalleryLayout(availableColumnCount: [1] + stride(from: 2, to: 10, by: 2), indexInitialColumnCount: 3)
-    
-    @objc
-    func onPinchHappened(_ gesture: UIPinchGestureRecognizer) {
-        if gesture.scale > 1.5 {
-            galleryLayout.descreaseColumns()
-            collectionView.collectionViewLayout.invalidateLayout()
-            gesture.scale = 1.0
-        }
-        
-        if gesture.scale < 0.5 {
-            galleryLayout.increaseColumns()
-            collectionView.collectionViewLayout.invalidateLayout()
-            gesture.scale = 1.0
         }
     }
     
@@ -112,33 +45,28 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if imageGallery == nil {
+        if presenter == nil {
             self.collectionView.backgroundView = placeholderView
+        } else {
+            presenter.fetchGalleryName()
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let imageWidth = galleryLayout.imageWidth(boundsWidth: collectionView.bounds.size.width)
-        let imageHeight = CGFloat(imageGallery.images[indexPath.row].aspectRatio) * imageWidth
-        return .init(width: imageWidth, height: imageHeight)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return galleryLayout.spaceBetweenColumns(boundsWidth: collectionView.bounds.width)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return galleryLayout.spaceBetweenRows(boundsWidth: collectionView.bounds.width)
+    override func viewDidAppear(_ animated: Bool) {
+        if presenter != nil {
+            fetchingImageIndicator.startAnimating()
+            presenter.fetchImages()
+        }
     }
     
     // MARK: - UICollectionViewDataSource impl
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageGallery?.images.count ?? 0
+        return presenter?.images.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! GalleryPresenterViewCell
-        cell.url = imageGallery.images[indexPath.row].url
+        cell.url = presenter.images[indexPath.row].data.url
         return cell
     }
     
@@ -179,8 +107,8 @@ UICollectionViewDataSource, UICollectionViewDropDelegate, UICollectionViewDelega
                 if let aspectRatio = aspectRatio, let imageUrl = imageUrl {
                     /* IF UPDATING DATASOURCE IS ASYNC?!?!?! */
                     placeholderContext.commitInsertion { indexPath in
-                        let imageItem = ImageItem(url: imageUrl, aspectRatio: aspectRatio)
-                        self.imageGallery.add(imageItem, at: indexPath.row)
+//                        let imageItem = ImageItem(url: imageUrl, aspectRatio: aspectRatio)
+//                        self.imageGallery.add(imageItem, at: indexPath.row)
                     }
                 } else {
                     placeholderContext.deletePlaceholder()

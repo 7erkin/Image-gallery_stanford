@@ -20,21 +20,33 @@ extension GalleriesEditor {
     }
     
     enum Event {
-        case fetched
-        case deleted(atIndex: Int)
-        case deletedPermanently(atIndex: Int)
-        case created(atIndex: Int)
-        case swapped(in: GalleryKind, firstIndex: Int, secondIndex: Int)
-        case renamed(in: GalleryKind, atIndex: Int)
-        case restored(atIndex: Int)
+        case galleriesFetched
+        case galleryDeleted(fromIndex: Int, toIndex: Int)
+        case galleryDeletedPermanently(byIndex: Int)
+        case galleryCreated(byIndex: Int)
+        case galleryRenamed(in: GalleryKind, byIndex: Int)
+        case galleryRestored(byIndex: Int, fromIndex: Int)
     }
 }
 
+func firstDifferentElementIndex(lhs: [Gallery], rhs: [Gallery], where predicate: (Gallery, Gallery) -> Bool) -> Int? {
+    let iterableGalleries = lhs.count > rhs.count ? rhs : lhs
+    for index in iterableGalleries.indices {
+        if predicate(lhs[index], rhs[index]) {
+            return index
+        }
+    }
+    if rhs.count != lhs.count {
+        return lhs.count > rhs.count ? rhs.count : lhs.count
+    }
+    return nil
+}
+
 class GalleriesEditor {
-    private(set) var galleries: [GalleryRamStorage.Gallery] = []
-    private(set) var recentlyDeletedGalleries: [GalleryRamStorage.Gallery] = []
+    private(set) var galleries: [Gallery] = []
+    private(set) var recentlyDeletedGalleries: [Gallery] = []
     
-    // memory leak? Whether Observer deinit is called before?
+    // any memory leak?
     private var observers = [GalleriesEditorObserver]()
     
     unowned var storage = GalleryRamStorage.shared
@@ -56,78 +68,84 @@ class GalleriesEditor {
     }
     
     func fetchGalleries() {
-        storage.getGalleries {[weak self] galleries in
-            self?.storage.getRecentlyDeletedGalleries({ recentlyDeletedGalleries in
-                self?.galleries = galleries.orderedByIndexInCollection
-                self?.recentlyDeletedGalleries = recentlyDeletedGalleries.orderedByIndexInCollection
-                self?.notifyAll(with: [.fetched])
-            })
+        storage.getGalleries { [weak self] galleries in
+            self?.storage.getRecentlyDeletedGalleries { recentlyDeletedGalleries in
+                self?.galleries = galleries
+                self?.recentlyDeletedGalleries = recentlyDeletedGalleries
+                self?.notifyAll(with: [.galleriesFetched])
+            }
         }
     }
     
-    func createGallery(withName name: String, byIndex index: Int) {
-        storage.create(gallery: .init(name: name, images: [], indexInCollection: index)) { [weak self] (created, gallery) in
-            if created, let gallery = gallery {
-                guard let self = self else { return }
-                self.galleries = (self.galleries + [gallery]).orderedByIndexInCollection
-                notifyAll(with: [.created(atIndex: index)])
+    func createGallery(withName name: String) {
+        storage.createGallery(withName: name) { [weak self] (res, galleries) in
+            if res, let galleries = galleries, let self = self {
+                for (index, gallery) in self.galleries.enumerated() {
+                    if gallery.id != galleries[index].id {
+                        self.galleries = galleries
+                        notifyAll(with: [.galleryCreated(byIndex: index)])
+                        return
+                    }
+                }
+                self.galleries = galleries
+                notifyAll(with: [.galleryCreated(byIndex: galleries.count - 1)])
             }
         }
     }
     
     func deleteGallery(byGalleryId id: Int) {
-        storage.deleteGallery(byGalleryId: id) { [weak self] deleted in
-            if deleted {
-                guard let self = self else { return }
-                let index = self.galleries.firstIndex(where: { $0.id == id })!
-                self.galleries.remove(at: index)
-                notifyAll(with: [.removed(at: index)])
+        storage.deleteGallery(byId: id) { [weak self] (res, galleries) in
+            if res {
+                self?.storage.getRecentlyDeletedGalleries { recentlyDeletedGalleries in
+                    if let self = self, let galleries = galleries {
+                        let predicate: (Gallery, Gallery) -> Bool = { $0.id != $1.id }
+                        let deletingIndex = firstDifferentElementIndex(lhs: self.galleries, rhs: galleries, where: predicate)!
+                        let insertingIndex = firstDifferentElementIndex(lhs: self.recentlyDeletedGalleries, rhs: recentlyDeletedGalleries, where: predicate) ?? recentlyDeletedGalleries.lastIndex!
+                        self.galleries = galleries
+                        self.recentlyDeletedGalleries = recentlyDeletedGalleries
+                        notifyAll(with: [.galleryDeleted(fromIndex: deletingIndex, toIndex: insertingIndex)])
+                    }
+                }
             }
         }
     }
     
     func restoreGallery(byGalleryId id: Int) {
-        storage.restoreGallery(byGalleryId: id) { [weak self] (restored, gallery) in
-            if restored, let gallery = gallery, let self = self {
-                let index = recentlyDeletedGalleries.firstIndex(where: { $0.id == gallery.id })!
-                let insertionIndex = self.galleries.firstIndex(where: { $0.data.indexInCollection > gallery.data.indexInCollection })!
-                self.galleries.insert(self.recentlyDeletedGalleries.remove(at: index), at: insertionIndex)
-                notifyAll(with: [.restored(at: insertionIndex)])
+        storage.restoreGallery(byId: id) { [weak self] (res) in
+            if res {
+                self?.storage.getGalleries { galleries in
+                    self?.storage.getRecentlyDeletedGalleries { recentlyDeletedGalleries in
+                        if let self = self {
+                            let predicate: (Gallery, Gallery) -> Bool = { $0.id != $1.id }
+                            let insertionIndex = firstDifferentElementIndex(lhs: self.galleries, rhs: galleries, where: predicate)!
+                            let deletingIndex = firstDifferentElementIndex(lhs: self.recentlyDeletedGalleries, rhs: recentlyDeletedGalleries, where: predicate)!
+                            self.galleries = galleries
+                            self.recentlyDeletedGalleries = recentlyDeletedGalleries
+                            notifyAll(with: [.galleryRestored(byIndex: insertionIndex, fromIndex: deletingIndex)])
+                        }
+                    }
+                }
             }
         }
     }
     
     func deleteGalleryPermanently(byGalleryId id: Int) {
-        storage.deleteGalleryPermanently(byGalleryId: id) { [weak self] deleted in
-            if deleted, let self = self {
-                let index = self.recentlyDeletedGalleries.firstIndex(where: { $0.id == id })!
-                self.recentlyDeletedGalleries.remove(at: index)
-                notifyAll(with: [.deleted(at: index)])
-            }
-        }
-    }
-    
-    func renameGallery(gallerySection: GalleryKind, byGalleryId id: Int, withName name: String) {
-        storage.renameGallery(byGalleryId: id, withName: name) { [weak self] renamed in
-            if renamed, let self = self {
-                var index: Int!
-                if gallerySection == .actualImageGallery {
-                    index = self.galleries.firstIndex(where: { $0.id == id })!
-                    galleries[index].data.name = name
-                } else {
-                    index = self.recentlyDeletedGalleries.firstIndex(where: { $0.id == id })!
-                    recentlyDeletedGalleries[index].data.name = name
+        storage.deleteGalleryPermanently(byId: id) { [weak self] (res, recentlyDeletedGalleries) in
+            if res, let recentlyDeletedGalleries = recentlyDeletedGalleries {
+                for (index, gallery) in galleries.enumerated() {
+                    if gallery.id != self?.recentlyDeletedGalleries[index].id {
+                        self?.recentlyDeletedGalleries = recentlyDeletedGalleries
+                        notifyAll(with: [.galleryDeletedPermanently(byIndex: index)])
+                    }
                 }
-                notifyAll(with: [.renamed(in: gallerySection, at: index)])
             }
         }
     }
     
-    func swapGalleries() {}
-}
-
-extension Array where Element == GalleryRamStorage.Gallery {
-    var orderedByIndexInCollection: [GalleryRamStorage.Gallery] {
-        return self.sorted(by: { $0.data.indexInCollection > $1.data.indexInCollection })
+    func renameGallery(byGalleryId id: Int, withName name: String) {
+        storage.renameGallery(byId: id, withName: name) { [weak self] res in
+            if res, let self = self {
+            }
+        }
     }
 }

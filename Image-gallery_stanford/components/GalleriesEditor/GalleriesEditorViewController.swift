@@ -9,38 +9,14 @@
 import UIKit
 
 class GalleriesEditorViewController: UITableViewController, EditedTitleSubmitting, GalleriesEditorObserver {
-    func notify(with events: [GalleriesEditor.Event]) {
-        self.tableView.performBatchUpdates({
-            for event in events {
-                switch event {
-                case .added(let gallerySection, let index):
-                    if gallerySection == .actualImageGallery {
-                        self.tableView.insertRows(at: [.init(row: index, section: 0)], with: .fade)
-                    } else {
-                        self.tableView.insertRows(at: [.init(row: index, section: 1)], with: .fade)
-                    }
-                case .removed(let gallerySection, let index):
-                    if gallerySection == .actualImageGallery {
-                        self.tableView.deleteRows(at: [.init(row: index, section: 0)], with: .fade)
-                    } else {
-                        self.tableView.deleteRows(at: [.init(row: index, section: 1)], with: .fade)
-                    }
-                case .renamed(let gallerySection, let index):
-                    let section = gallerySection == GalleriesEditor.GalleryKind.actualImageGallery ? 0 : 1
-                    self.tableView.reloadRows(at: [.init(row: index, section: section)], with: .none)
-                default: break
-                }
-            }
-        })
-    }
-    
-    private lazy var galleriesEditor: GalleriesEditor = { [unowned self] in
+    private lazy var editor: GalleriesEditor = { [unowned self] in
         let editor = GalleriesEditor()
         editor.subscribe(self)
         return editor
     }()
     
     @IBAction func onAddNewImageGallery(_ sender: Any) {
+        editor.createGallery(withName: "New gallery \(editor.galleries.count)")
     }
     
     override func viewDidLoad() {
@@ -48,12 +24,6 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
     }
     
     func submit(sender: GalleriesEditorViewCell) {
-        let index = tableView.indexPath(for: sender)!
-        let gallerySection = index.section == 0 ? GalleriesEditor.GalleryKind.actualImageGallery : .recentlyDeletedImageGallery
-        if let title = sender.titleEditor.text {
-            //storage.renameGallery(gallerySection: gallerySection, at: index.row, name: title)
-            sender.editingEnable = false
-        }
     }
 
     // MARK: - Table view data source
@@ -66,13 +36,13 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? galleriesEditor.galleries.count : galleriesEditor.recentlyDeletedGalleries.count
+        return section == 0 ? editor.galleries.count : editor.recentlyDeletedGalleries.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let source = indexPath.section == 0 ? galleriesEditor.galleries : galleriesEditor.recentlyDeletedGalleries
+        let source = indexPath.section == 0 ? editor.galleries : editor.recentlyDeletedGalleries
         let cell = tableView.dequeueReusableCell(withIdentifier: "ImageGalleryCell", for: indexPath) as! GalleriesEditorViewCell
-        cell.title.text = source[indexPath.row].name
+        cell.title.text = source[indexPath.row].data.name
         cell.editedTitleSubmittingDelegate = self
         return cell
     }
@@ -91,8 +61,8 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
         if indexPath.section != 1 { return nil }
         let action = UIContextualAction(
             style: UIContextualAction.Style.normal,
-            title: "Recover image gallery") { [weak self] (action, view, completion) in
-                self?.galleriesEditor.restoreGallery(at: indexPath.row)
+            title: "Recover image gallery") { [unowned self] (action, view, completion) in
+                self.editor.restoreGallery(byGalleryId: self.editor.recentlyDeletedGalleries[indexPath.row].id)
             }
         return UISwipeActionsConfiguration(actions: [action])
     }
@@ -101,11 +71,11 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
         switch indexPath.section {
             case 0:
                 if editingStyle == .delete {
-                    galleriesEditor.moveToRecentlyDeleted(galleryByIndex: indexPath.row)
+                    editor.deleteGallery(byGalleryId: editor.galleries[indexPath.row].id)
                 }
             case 1:
                 if editingStyle == .delete {
-                    galleriesEditor.removeGalleryPermanently(at: indexPath.row)
+                    editor.deleteGalleryPermanently(byGalleryId: editor.recentlyDeletedGalleries[indexPath.row].id)
                 }
             default:
                 break
@@ -117,9 +87,35 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
             case "ShowImageGallery":
                 let imageGalleryVC = (segue.destination as? UINavigationController)?.viewControllers.first as! GalleryPresenterViewController
                 let indexCell = (view as! UITableView).indexPath(for: sender as! UITableViewCell)!.row
-                imageGalleryVC.imageGallery = galleriesEditor.galleries[indexCell]
+                //imageGalleryVC.imageGallery = galleriesEditor.galleries[indexCell]
             default:
                 break
         }
+    }
+    
+    func notify(with events: [GalleriesEditor.Event]) {
+        self.tableView.performBatchUpdates({
+            for event in events {
+                switch event {
+                case .galleriesFetched:
+                    tableView.reloadData()
+                case .galleryCreated(let index):
+                    tableView.insertRows(at: [.init(row: index, section: 0)], with: .fade)
+                case .galleryDeleted(let fromIndex, let toIndex):
+                    tableView.deleteRows(at: [.init(row: fromIndex, section: 0)], with: .fade)
+                    tableView.insertRows(at: [.init(row: toIndex, section: 1)], with: .fade)
+                case .galleryDeletedPermanently(let index):
+                    tableView.deleteRows(at: [.init(row: index, section: 1)], with: .fade)
+                case .galleryRenamed(let galleryKind, let index):
+                    let section = galleryKind == .actualImageGallery ? 0 : 1
+                    tableView.reloadRows(at: [.init(row: index, section: section)], with: .fade)
+                case .galleryRestored(let byIndex, let fromIndex):
+                    tableView.insertRows(at: [.init(row: byIndex, section: 0)], with: .fade)
+                    tableView.deleteRows(at: [.init(row: fromIndex, section: 1)], with: .fade)
+                default:
+                    fatalError("Unexpected event in function: \(#function) at line: \(#line)")
+                }
+            }
+        })
     }
 }

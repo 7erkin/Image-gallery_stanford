@@ -12,19 +12,17 @@ protocol GalleryPresenterObserver: class {
     func notify(with: [GalleryPresenter.Event])
 }
 
-class GalleryPresenter: GalleryStorageObserver {
+class GalleryPresenter {
     enum Event {
+        case imagesFetched
         case imageAdded(byIndex: Int)
         case imagesDeleted(byIndices: [Int])
-        case imagesSwaped(firstIndex: Int, secondIndex: Int)
+        case imageMoved(firstIndex: Int, secondIndex: Int)
         case galleryRenamed
-        case uploaded
     }
     
     private var galleryId: Int
-    
-    private(set) var gallery: GalleryRamStorage.Gallery!
-    
+    private(set) var images: [Image] = []
     private var observers = [GalleryPresenterObserver]()
     
     func subscribe(_ observer: GalleryPresenterObserver) {
@@ -47,38 +45,7 @@ class GalleryPresenter: GalleryStorageObserver {
         galleryId = id
     }
     
-    deinit {
-        GalleryRamStorage.shared.unsubscribe(self)
-    }
+    func fetchImages() {}
     
-    func upload() {
-        GalleryRamStorage.shared.getGalleryBy(id: galleryId) {[weak self] gallery in
-            guard let self = self else { return }
-            guard let gallery = gallery else { fatalError("Unexpected behaviour") }
-            self.gallery = gallery
-            GalleryRamStorage.shared.subscribe(self)
-            notifyAll(with: [.uploaded])
-        }
-    }
-    
-    func add(_ image: GalleryRamStorage.Image, at index: Int) {
-    }
-    
-    // MARK: - GalleryStorageObserver impl
-    func notify(with events: [GalleryRamStorage.Event]) {
-        for event in events {
-            switch event {
-            case .galleryRenamed(let id):
-                if gallery.id == id {
-                    GalleryRamStorage.shared.getGalleryBy(id: id) { [weak self] gallery in
-                        guard let gallery = gallery else { fatalError() }
-                        self?.gallery.name = gallery.name
-                        notifyAll(with: [.galleryRenamed])
-                    }
-                }
-            default:
-                break
-            }
-        }
-    }
+    func fetchGalleryName() {}
 }
