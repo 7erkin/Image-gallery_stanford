@@ -191,10 +191,10 @@
 		7CD2A07D241D8092004FC41F /* Image-gallery_stanford */ = {
 			isa = PBXGroup;
 			children = (
-				7CCDC3A4243FD6360009A439 /* AppContext.swift */,
-				7CCDC39F243FD4EE0009A439 /* storages */,
 				7CD2A092241D80A6004FC41F /* support */,
 				7CA58685243E5D760060A5AB /* extensions */,
+				7CCDC3A4243FD6360009A439 /* AppContext.swift */,
+				7CCDC39F243FD4EE0009A439 /* storages */,
 				7C734122243E64B900F374FC /* components */,
 				7CD2A084241D8092004FC41F /* Main.storyboard */,
 				7CD2A08C241D8093004FC41F /* Info.plist */,

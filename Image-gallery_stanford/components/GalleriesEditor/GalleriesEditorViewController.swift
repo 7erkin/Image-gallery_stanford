@@ -15,7 +15,7 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
         return editor
     }()
     
-    private weak var currentPresenter: GalleryPresenter?
+    private weak var currentPresenter: GalleryPresenter!
     
     @IBAction func onAddNewImageGallery(_ sender: Any) {
         editor.createGallery(withName: "New gallery \(editor.galleries.count)")
@@ -54,13 +54,23 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        let indexPath = tableView.indexPath(for: sender as! UITableViewCell)
-        /* Q: if nil so.. false? */
-        return indexPath?.section == 0
+        switch identifier {
+        case "ShowImageGallery":
+            if
+                let cell = sender as? GalleriesEditorViewCell,
+                let section = tableView.indexPath(for: cell)?.section {
+                return section == 0
+            }
+        default:
+            return false
+        }
+        return false
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "ShowImageGallery", sender: tableView.cellForRow(at: indexPath))
+        if shouldPerformSegue(withIdentifier: "ShowImageGallery", sender: tableView.cellForRow(at: indexPath)) {
+            performSegue(withIdentifier: "ShowImageGallery", sender: tableView.cellForRow(at: indexPath))
+        }
     }
     
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -93,7 +103,8 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
             case "ShowImageGallery":
                 let galleryPresenterVC = (segue.destination as? UINavigationController)?.viewControllers.first as! GalleryPresenterViewController
                 let indexCell = (view as! UITableView).indexPath(for: sender as! UITableViewCell)!.row
-                let presenter = GalleryPresenter(withGalleryId: editor.galleries[indexCell].id)
+                let presenter = GalleryPresenter()
+                presenter.galleryId = editor.galleries[indexCell].id
                 currentPresenter = presenter
                 galleryPresenterVC.presenter = presenter
             default:
@@ -112,6 +123,10 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
                 case .galleryDeleted(let fromIndex, let toIndex):
                     tableView.deleteRows(at: [.init(row: fromIndex, section: 0)], with: .fade)
                     tableView.insertRows(at: [.init(row: toIndex, section: 1)], with: .fade)
+                    let deletedGalleryId = editor.recentlyDeletedGalleries[toIndex].id
+                    if currentPresenter.galleryId == deletedGalleryId {
+                    //    do smth to hide image gallery
+                    }
                 case .galleryDeletedPermanently(let index):
                     tableView.deleteRows(at: [.init(row: index, section: 1)], with: .fade)
                 case .galleryRenamed(let galleryKind, let index):

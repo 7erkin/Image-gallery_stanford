@@ -22,7 +22,7 @@ class GalleryPresenter {
     }
     
     private unowned var storage = AppContext.galleryStorage
-    private var galleryId: Int
+    var galleryId: Int!
     private(set) var images: [Image] = []
     private(set) var galleryName: String!
     private var observers = [GalleryPresenterObserver]()
@@ -41,10 +41,6 @@ class GalleryPresenter {
     
     func notifyAll(with events: [Event]) {
         observers.forEach { $0.notify(with: events) }
-    }
-    
-    init(withGalleryId id: Int) {
-        galleryId = id
     }
     
     func fetchInitialData() {
