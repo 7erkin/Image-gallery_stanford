@@ -44,10 +44,6 @@ class GalleriesEditorViewCell: UITableViewCell, UITextFieldDelegate, UITextInput
         }
     }
     
-    func endEditing() {
-        isEditingActive = false
-    }
-    
     @objc
     func onSubmitChanges() {
         editedTitleSubmittingDelegate?.submitEditedTitle(sender: self)

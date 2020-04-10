@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "8BC2E3E0-82CF-4BF7-87E8-EC177648137F"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "80C7B20B-D22D-4ECC-87A0-6008C497660F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Image-gallery_stanford/components/GalleriesEditor/Model/GalleriesEditor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "renameGallery(byGalleryId:withName:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "80C7B20B-D22D-4ECC-87A0-6008C497660F - aed5a972606863ba"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Image_gallery_stanford.GalleriesEditor.renameGallery(byGalleryId: Swift.Int, withName: Swift.String) -&gt; ()"
+                  moduleName = "Image-gallery_stanford"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user166334/Desktop/Image-gallery_stanford/Image-gallery_stanford/components/GalleriesEditor/Model/GalleriesEditor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  uuid = "80C7B20B-D22D-4ECC-87A0-6008C497660F - b4cdf3d5b4d75f34"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool, Swift.Optional&lt;Image_gallery_stanford.Gallery&gt;) -&gt; () in Image_gallery_stanford.GalleriesEditor.renameGallery(byGalleryId: Swift.Int, withName: Swift.String) -&gt; ()"
+                  moduleName = "Image-gallery_stanford"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user166334/Desktop/Image-gallery_stanford/Image-gallery_stanford/components/GalleriesEditor/Model/GalleriesEditor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "286">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

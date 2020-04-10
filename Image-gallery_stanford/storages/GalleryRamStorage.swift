@@ -72,18 +72,19 @@ class GalleryRamStorage: GalleryStoragable {
         completion(false, nil)
     }
     
-    func renameGallery(byId id: Int, withName name: String, _ completion: (Bool) -> Void) {
+    func renameGallery(byId id: Int, withName name: String, _ completion: (Bool, Gallery?) -> Void) {
         if let index = galleries.firstIndex(where: { $0.id == id }) {
             galleries[index].data.name = name
+            completion(true, galleries[index])
         } else {
             if let index = recentlyDeletedGalleries.firstIndex(where: { $0.id == id }) {
                 recentlyDeletedGalleries[index].data.name = name
+                completion(true, recentlyDeletedGalleries[index])
             } else {
-                completion(false)
+                completion(false, nil)
                 return
             }
         }
-        completion(true)
     }
     
     func moveGallery(byId movedGalleryId: Int, onPlaceWhereGalleryWithId takingPlaceGalleryId: Int, _ completion: (Bool) -> Void) {

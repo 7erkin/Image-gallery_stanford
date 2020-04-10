@@ -39,7 +39,7 @@ protocol GalleryStoragable: class {
     func deleteGallery(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void)
     func deleteGalleryPermanently(byId id: Int, _ completion: (Bool, [Gallery]?) -> Void)
     func createGallery(withName name: String, _ completion: (Bool, [Gallery]?) -> Void)
-    func renameGallery(byId id: Int, withName name: String, _ completion: (Bool) -> Void)
+    func renameGallery(byId id: Int, withName name: String, _ completion: (Bool, Gallery?) -> Void)
     func moveGallery(byId movedGalleryId: Int, onPlaceWhereGalleryWithId takingPlaceGalleryId: Int, _ completion: (Bool) -> Void)
     // ImagesAPI
     func createImage(_ imageData: ImageData, inGalleryId galleryId: Int, onPlaceWhereImageWithId id: Int, _ completion: (Bool, [Image]?) -> Void)

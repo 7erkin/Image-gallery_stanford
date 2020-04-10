@@ -26,6 +26,10 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
     }
     
     func submitEditedTitle(sender: GalleriesEditorViewCell) {
+        if let indexPath = tableView.indexPath(for: sender) {
+            let galleries = indexPath.section == 0 ? editor.galleries : editor.recentlyDeletedGalleries
+            editor.renameGallery(byGalleryId: galleries[indexPath.row].id, withName: sender.titleEditor.text ?? "")
+        }
     }
 
     // MARK: - Table view data source
@@ -112,7 +116,9 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
                     tableView.deleteRows(at: [.init(row: index, section: 1)], with: .fade)
                 case .galleryRenamed(let galleryKind, let index):
                     let section = galleryKind == .actualImageGallery ? 0 : 1
+                    let cell = tableView.cellForRow(at: .init(row: index, section: section)) as! GalleriesEditorViewCell
                     tableView.reloadRows(at: [.init(row: index, section: section)], with: .fade)
+                    cell.isEditingActive = false
                 case .galleryRestored(let byIndex, let fromIndex):
                     tableView.insertRows(at: [.init(row: byIndex, section: 0)], with: .fade)
                     tableView.deleteRows(at: [.init(row: fromIndex, section: 1)], with: .fade)

@@ -143,8 +143,19 @@ class GalleriesEditor {
     }
     
     func renameGallery(byGalleryId id: Int, withName name: String) {
-        storage.renameGallery(byId: id, withName: name) { [weak self] res in
-            if res, let self = self {
+        storage.renameGallery(byId: id, withName: name) { [weak self] (res, gallery) in
+            if res, let gallery = gallery, let self = self {
+                if let index = self.galleries.firstIndex(where: { $0.id == gallery.id }) {
+                    self.galleries[index] = gallery
+                    notifyAll(with: [.galleryRenamed(in: .actualImageGallery, byIndex: index)])
+                } else {
+                    if let index = self.recentlyDeletedGalleries.firstIndex(where: { $0.id == gallery.id }) {
+                        self.recentlyDeletedGalleries[index] = gallery
+                        notifyAll(with: [.galleryRenamed(in: .recentlyDeletedImageGallery, byIndex: index)])
+                    } else {
+                        fatalError("UB")
+                    }
+                }
             }
         }
     }
