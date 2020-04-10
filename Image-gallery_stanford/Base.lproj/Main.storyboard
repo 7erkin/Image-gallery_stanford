@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wFv-0i-SDS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wFv-0i-SDS">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -33,21 +33,46 @@
                                             <textInputTraits key="textInputTraits"/>
                                         </textField>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QAI-eQ-cdl">
-                                            <rect key="frame" x="20" y="8.5" width="42" height="27"/>
+                                            <rect key="frame" x="20" y="8.5" width="41.5" height="26.5"/>
                                             <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="22"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dSV-0a-E5S">
+                                            <rect key="frame" x="326" y="7" width="68" height="30"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sx6-DA-tud">
+                                                    <rect key="frame" x="0.0" y="0.0" width="27" height="30"/>
+                                                    <state key="normal" image="plus" catalog="system">
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="21" scale="large"/>
+                                                    </state>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8FG-n5-UHm">
+                                                    <rect key="frame" x="37" y="0.0" width="31" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <state key="normal" image="pencil.circle" catalog="system">
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="21" scale="large" weight="regular"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onEditButtonTapped:" destination="aSY-lD-KNt" eventType="touchUpInside" id="kdR-ns-AZo"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="QAI-eQ-cdl" firstAttribute="leading" secondItem="SXQ-yt-zvX" secondAttribute="leading" constant="20" id="LQi-Xb-SNU"/>
                                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QAI-eQ-cdl" secondAttribute="trailing" constant="20" symbolic="YES" id="aDr-ve-fgh"/>
+                                        <constraint firstAttribute="trailing" secondItem="dSV-0a-E5S" secondAttribute="trailing" constant="20" id="bXm-Io-mxR"/>
+                                        <constraint firstItem="dSV-0a-E5S" firstAttribute="centerY" secondItem="SXQ-yt-zvX" secondAttribute="centerY" id="ciX-W8-L0r"/>
                                         <constraint firstItem="8nc-cl-i3d" firstAttribute="leading" secondItem="QAI-eQ-cdl" secondAttribute="leading" constant="-10" id="gOO-sf-AlN"/>
                                         <constraint firstItem="QAI-eQ-cdl" firstAttribute="centerY" secondItem="SXQ-yt-zvX" secondAttribute="centerY" id="uno-e0-Q2t"/>
                                         <constraint firstItem="8nc-cl-i3d" firstAttribute="centerY" secondItem="SXQ-yt-zvX" secondAttribute="centerY" id="ypE-tu-lSJ"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="applyChangesButton" destination="sx6-DA-tud" id="Jx2-ff-kOC"/>
+                                    <outlet property="editButton" destination="8FG-n5-UHm" id="Y6j-bd-KvY"/>
                                     <outlet property="title" destination="QAI-eQ-cdl" id="hhH-Ye-v5F"/>
                                     <outlet property="titleEditor" destination="8nc-cl-i3d" id="EF5-0j-1Ai"/>
                                 </connections>
@@ -58,6 +83,7 @@
                             <outlet property="delegate" destination="tzd-er-tPO" id="BV1-xx-FH5"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="QVe-c5-sn5">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Wny-ze-8Ew">
                             <connections>
@@ -65,13 +91,14 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="o8a-IN-z7u" kind="showDetail" identifier="ShowImageGallery" id="6zp-iD-XlW"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cQf-IX-fzv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="512.5" y="317.578125"/>
+            <point key="canvasLocation" x="909" y="317"/>
         </scene>
         <!--Gallery Presenter View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -250,6 +277,10 @@
             <point key="canvasLocation" x="512.5" y="1277.9296875"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="pencil.circle" catalog="system" width="64" height="60"/>
+        <image name="plus" catalog="system" width="64" height="56"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="6zp-iD-XlW"/>
     </inferredMetricsTieBreakers>

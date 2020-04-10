@@ -25,7 +25,7 @@ class GalleriesEditorViewController: UITableViewController, EditedTitleSubmittin
         super.viewDidLoad()
     }
     
-    func submit(sender: GalleriesEditorViewCell) {
+    func submitEditedTitle(sender: GalleriesEditorViewCell) {
     }
 
     // MARK: - Table view data source
