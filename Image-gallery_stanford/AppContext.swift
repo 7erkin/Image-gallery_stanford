@@ -10,4 +10,5 @@ import Foundation
 
 class AppContext {
     static var galleryStorage: GalleryStoragable = GalleryRamStorage.shared
+    static var imageCache: ImageCachable = ImageRamCache.shared
 }

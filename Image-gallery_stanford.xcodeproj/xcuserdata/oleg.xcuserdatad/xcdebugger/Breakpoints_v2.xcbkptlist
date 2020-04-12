@@ -7,32 +7,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "74767C04-53A3-46B5-B269-538F784E8244"
+            uuid = "7095C646-0D78-4FF7-A267-526523239F4A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Image-gallery_stanford/components/GalleriesEditor/GalleriesEditorViewController.swift"
+            filePath = "Image-gallery_stanford/Caches/ImageRamCache.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "shouldPerformSegue(withIdentifier:sender:)"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "saveImage(byUrl:_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AF7A6136-41F0-4AEC-822F-66AB6DDD6D95"
+            uuid = "B2D4F5A9-58B1-44C0-8D36-CA989BF0652E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Image-gallery_stanford/components/GalleriesEditor/GalleriesEditorViewController.swift"
+            filePath = "Image-gallery_stanford/Caches/ImageRamCache.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "shouldPerformSegue(withIdentifier:sender:)"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "saveImage(byUrl:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D9EE96B9-DEDD-44EE-9EA3-2DBC1FF4E505"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Image-gallery_stanford/Caches/ImageRamCache.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "19"
+            endingLineNumber = "19"
+            landmarkName = "deinit"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
