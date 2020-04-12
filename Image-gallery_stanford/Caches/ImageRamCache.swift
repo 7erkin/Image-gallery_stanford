@@ -9,19 +9,20 @@
 import Foundation
 import UIKit
 
-class LockGuard {
-    private var _m: pthread_mutex_t
-    init(_ m: pthread_mutex_t) {
-        self._m = m
-        pthread_mutex_lock(&_m)
-    }
-    deinit {
-        unlock()
-    }
-    func unlock() {
-        pthread_mutex_unlock(&_m)
-    }
-}
+//class LockGuard {
+//    // correct?
+//    private var _m: pthread_mutex_t
+//    init(_ m: pthread_mutex_t) {
+//        self._m = m
+//        pthread_mutex_lock(&_m)
+//    }
+//    deinit {
+//        unlock()
+//    }
+//    func unlock() {
+//        pthread_mutex_unlock(&_m)
+//    }
+//}
 
 class ImageRamCache: ImageCachable {
     private var cache: [URL:UIImage] = [:]
@@ -31,23 +32,22 @@ class ImageRamCache: ImageCachable {
     static var shared: ImageCachable = ImageRamCache()
     
     func hasImage(byUrl url: URL, _ completion: @escaping (Bool) -> Void) {
-        let lockGuard = LockGuard(m)
+        pthread_mutex_lock(&m)
         let index = cache.index(forKey: url)
-        lockGuard.unlock()
+        pthread_mutex_unlock(&m)
         completion(index != nil)
     }
     
     func getImage(byUrl url: URL, _ completion: @escaping (UIImage?) -> Void) {
-        let lockGuard = LockGuard(m)
+        pthread_mutex_lock(&m)
         let image = cache[url]
-        lockGuard.unlock()
+        pthread_mutex_unlock(&m)
         completion(image)
     }
     
     func saveImage(byUrl url: URL, _ image: UIImage) {
-        // because _ is not proper behaviour
-        let lock = LockGuard(m)
+        pthread_mutex_lock(&m)
         cache[url] = image
-        lock.unlock()
+        pthread_mutex_unlock(&m)
     }
 }

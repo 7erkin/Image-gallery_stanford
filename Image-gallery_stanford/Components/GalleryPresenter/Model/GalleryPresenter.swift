@@ -50,4 +50,37 @@ class GalleryPresenter {
             }
         }
     }
+    
+    func moveImage(byIndex indexFrom: Int, toIndex indexTo: Int) {
+        storage.moveImage(
+            byId: gallery.data.images[indexFrom].id,
+            inGalleryId: galleryId,
+            onPlaceWhereImageWithId: gallery.data.images[indexTo].id) { [weak self] (res, images) in
+                if res, let images = images, let self = self {
+                    self.gallery.data.images = images
+                    self.notifyAll(with: [.imageMoved(firstIndex: indexFrom, secondIndex: indexTo)])
+                }
+        }
+    }
+    
+    func addImage(byIndex index: Int, withUrl url: URL) {
+        storage.createImage(
+            NewImage(url: url),
+            inGalleryId: galleryId,
+            onPlaceWhereImageWithId: gallery.data.images[index].id) { (res, images) in
+                if res, let images = images {
+                    gallery.data.images = images
+                    notifyAll(with: [.imageAdded(byIndex: index)])
+                }
+        }
+    }
+    
+    func deleteImages(byIndices indices: [Int]) {
+        storage.deleteImages(byIds: indices.map { gallery.data.images[$0].id }, inGalleryId: galleryId) { [weak self] (res, images) in
+            if res, let images = images, let self = self {
+                self.gallery.data.images = images
+                self.notifyAll(with: [.imagesDeleted(byIndices: indices)])
+            }
+        }
+    }
 }

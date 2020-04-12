@@ -24,6 +24,11 @@
 		7CAE8E622442A44000D84DE3 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E612442A44000D84DE3 /* Utils.swift */; };
 		7CAE8E662442A57300D84DE3 /* ImageCachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E652442A57300D84DE3 /* ImageCachable.swift */; };
 		7CAE8E682442A83800D84DE3 /* ImageRamCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E672442A83800D84DE3 /* ImageRamCache.swift */; };
+		7CAE8E6A2443A9B200D84DE3 /* +CellGestureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E692443A9B200D84DE3 /* +CellGestureDelegate.swift */; };
+		7CAE8E6C2443A9D000D84DE3 /* +GalleryPresenterObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E6B2443A9D000D84DE3 /* +GalleryPresenterObserver.swift */; };
+		7CAE8E6E2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */; };
+		7CAE8E702443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */; };
+		7CAE8E722443AA7700D84DE3 /* +UICollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E712443AA7700D84DE3 /* +UICollectionViewDataSource.swift */; };
 		7CCDC3A1243FD5200009A439 /* GalleryStoragable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A0243FD5200009A439 /* GalleryStoragable.swift */; };
 		7CCDC3A5243FD6360009A439 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A4243FD6360009A439 /* AppContext.swift */; };
 		7CCDC3AA24412DD10009A439 /* StretchedLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A924412DD10009A439 /* StretchedLayout.swift */; };
@@ -53,6 +58,11 @@
 		7CAE8E612442A44000D84DE3 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		7CAE8E652442A57300D84DE3 /* ImageCachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCachable.swift; sourceTree = "<group>"; };
 		7CAE8E672442A83800D84DE3 /* ImageRamCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRamCache.swift; sourceTree = "<group>"; };
+		7CAE8E692443A9B200D84DE3 /* +CellGestureDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+CellGestureDelegate.swift"; sourceTree = "<group>"; };
+		7CAE8E6B2443A9D000D84DE3 /* +GalleryPresenterObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+GalleryPresenterObserver.swift"; sourceTree = "<group>"; };
+		7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDragDelegate.swift"; sourceTree = "<group>"; };
+		7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDropDelegate.swift"; sourceTree = "<group>"; };
+		7CAE8E712443AA7700D84DE3 /* +UICollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDataSource.swift"; sourceTree = "<group>"; };
 		7CCDC3A0243FD5200009A439 /* GalleryStoragable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryStoragable.swift; sourceTree = "<group>"; };
 		7CCDC3A4243FD6360009A439 /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		7CCDC3A924412DD10009A439 /* StretchedLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchedLayout.swift; sourceTree = "<group>"; };
@@ -146,6 +156,11 @@
 			children = (
 				7CAE8E592442972C00D84DE3 /* support */,
 				7CD2A082241D8092004FC41F /* GalleryPresenterViewController.swift */,
+				7CAE8E692443A9B200D84DE3 /* +CellGestureDelegate.swift */,
+				7CAE8E6B2443A9D000D84DE3 /* +GalleryPresenterObserver.swift */,
+				7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */,
+				7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */,
+				7CAE8E712443AA7700D84DE3 /* +UICollectionViewDataSource.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -334,16 +349,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CAE8E6C2443A9D000D84DE3 /* +GalleryPresenterObserver.swift in Sources */,
 				7CAE8E562442770100D84DE3 /* TwoDifferentCellInRowLayout.swift in Sources */,
 				7C24E6092426E3DE00552C2F /* GalleryPresenter.swift in Sources */,
 				7C24E60D242AB04900552C2F /* UIImage+.swift in Sources */,
 				7CAE8E54244276DC00D84DE3 /* StandardLayout.swift in Sources */,
+				7CAE8E722443AA7700D84DE3 /* +UICollectionViewDataSource.swift in Sources */,
 				7CAE8E5B2442973B00D84DE3 /* LayoutFactory.swift in Sources */,
 				7CCDC3AA24412DD10009A439 /* StretchedLayout.swift in Sources */,
 				7C60593924201A0D00E729AA /* ImageView.swift in Sources */,
 				7C605937241E724900E729AA /* ImageViewController.swift in Sources */,
 				7C734121243E646F00F374FC /* Array+.swift in Sources */,
 				7CCDC3A1243FD5200009A439 /* GalleryStoragable.swift in Sources */,
+				7CAE8E6A2443A9B200D84DE3 /* +CellGestureDelegate.swift in Sources */,
+				7CAE8E702443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift in Sources */,
 				7CCDC3A5243FD6360009A439 /* AppContext.swift in Sources */,
 				7C605935241E672400E729AA /* GalleriesEditorViewController.swift in Sources */,
 				7C605931241E36B000E729AA /* URL+.swift in Sources */,
@@ -355,6 +374,7 @@
 				7CAE8E682442A83800D84DE3 /* ImageRamCache.swift in Sources */,
 				7C734128243E67C900F374FC /* GalleryRamStorage.swift in Sources */,
 				7CAE8E622442A44000D84DE3 /* Utils.swift in Sources */,
+				7CAE8E6E2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift in Sources */,
 				7CD2A081241D8092004FC41F /* SceneDelegate.swift in Sources */,
 				7C24E6042426956F00552C2F /* GalleriesEditor.swift in Sources */,
 			);

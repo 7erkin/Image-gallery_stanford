@@ -39,6 +39,11 @@ struct Gallery {
     var data: GalleryData
 }
 
+struct NewImage {
+    var url: URL
+
+}
+
 protocol GalleryStoragable: class {
     static var shared: GalleryStoragable { get }
     // GalleriesAPI
@@ -52,7 +57,8 @@ protocol GalleryStoragable: class {
     func renameGallery(byId id: Int, withName name: String, _ completion: (Bool, Gallery?) -> Void)
     func moveGallery(byId movedGalleryId: Int, onPlaceWhereGalleryWithId takingPlaceGalleryId: Int, _ completion: (Bool) -> Void)
     // ImagesAPI
-    func createImage(_ imageData: ImageData, inGalleryId galleryId: Int, onPlaceWhereImageWithId id: Int, _ completion: (Bool, [Image]?) -> Void)
+    func createImage(_ image: NewImage, inGalleryId galleryId: Int, onPlaceWhereImageWithId id: Int, _ completion: (Bool, [Image]?) -> Void)
     func deleteImage(byId id: Int, inGalleryId galleryId: Int, _ completion: (Bool, [Image]?) -> Void)
     func moveImage(byId movedImageId: Int, inGalleryId galleryId: Int, onPlaceWhereImageWithId takingPlaceImageId: Int, _ completion: (Bool, [Image]?) -> Void)
+    func deleteImages(byIds ids: [Int], inGalleryId galleryId: Int, _ completion: (Bool, [Image]?) -> Void)
 }

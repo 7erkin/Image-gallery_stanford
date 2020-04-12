@@ -132,12 +132,25 @@
                                                     <rect key="frame" x="60" y="54.5" width="37" height="37"/>
                                                     <color key="color" red="0.1098317521" green="0.48168316859999999" blue="0.15472983230000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 </activityIndicatorView>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t4T-5X-SnJ" customClass="ChoiceIndicator" customModule="Image_gallery_stanford" customModuleProvider="target">
+                                                    <rect key="frame" x="132" y="121" width="20" height="20"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="ESY-zd-Nkj"/>
+                                                        <constraint firstAttribute="width" constant="20" id="xbP-ll-Hn7"/>
+                                                    </constraints>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isActive" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" red="0.9199272181" green="0.94333755969999999" blue="0.87485961599999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <constraints>
                                                 <constraint firstItem="TYV-wy-zGF" firstAttribute="centerY" secondItem="tp6-p6-lgl" secondAttribute="centerY" id="08S-Kk-Yep"/>
                                                 <constraint firstItem="n0P-P8-8gz" firstAttribute="leading" secondItem="tp6-p6-lgl" secondAttribute="leading" id="3hy-He-MUY"/>
+                                                <constraint firstAttribute="trailing" secondItem="t4T-5X-SnJ" secondAttribute="trailing" constant="5" id="6Ye-Qr-EVh"/>
                                                 <constraint firstItem="n0P-P8-8gz" firstAttribute="centerX" secondItem="tp6-p6-lgl" secondAttribute="centerX" id="Cvw-t6-AdY"/>
+                                                <constraint firstAttribute="bottom" secondItem="t4T-5X-SnJ" secondAttribute="bottom" constant="5" id="D0V-cx-TiG"/>
                                                 <constraint firstAttribute="bottom" secondItem="n0P-P8-8gz" secondAttribute="bottom" id="EI7-ea-C8J"/>
                                                 <constraint firstItem="TYV-wy-zGF" firstAttribute="centerX" secondItem="tp6-p6-lgl" secondAttribute="centerX" id="ODg-uc-Ot4"/>
                                                 <constraint firstItem="n0P-P8-8gz" firstAttribute="top" secondItem="tp6-p6-lgl" secondAttribute="top" id="fN9-x1-vdl"/>
@@ -147,6 +160,7 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="157" height="146"/>
                                         <connections>
+                                            <outlet property="choiceIndicator" destination="t4T-5X-SnJ" id="bo1-oV-k0e"/>
                                             <outlet property="imageView" destination="n0P-P8-8gz" id="zDx-oa-oAm"/>
                                             <outlet property="loadingIndicator" destination="TYV-wy-zGF" id="Tp1-cV-Hxh"/>
                                         </connections>
@@ -182,7 +196,11 @@
                     <navigationItem key="navigationItem" id="AcH-q4-rp3">
                         <nil key="title"/>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="trash" id="1EQ-E7-ZdS"/>
+                            <barButtonItem systemItem="trash" id="1EQ-E7-ZdS">
+                                <connections>
+                                    <action selector="onDeleteButtonTapped:" destination="BYZ-38-t0r" id="TUA-se-BOS"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem systemItem="refresh" id="cuG-Zd-f5B">
                                 <connections>
                                     <action selector="switchLayout:" destination="BYZ-38-t0r" id="fId-zv-OKq"/>
@@ -192,6 +210,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="HGg-bW-BuU" id="YPT-nA-S2T"/>
+                        <outlet property="deleteImagesButton" destination="1EQ-E7-ZdS" id="eS5-m4-LpK"/>
                         <outlet property="fetchingImagesIndicator" destination="yK9-PD-RQa" id="rLr-bq-0J7"/>
                         <segue destination="OAU-f0-O75" kind="show" identifier="ShowImage" id="VeX-a5-B1m"/>
                     </connections>

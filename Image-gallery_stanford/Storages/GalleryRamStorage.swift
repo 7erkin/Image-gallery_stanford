@@ -21,9 +21,15 @@ class ImageIdentifier: Identifier {}
 
 class GalleryRamStorage: GalleryStoragable {
     private var galleries: [Gallery] = [
-        Gallery(id: 0, data: GalleryData(name: "Muscle car", images: (1...6).map{ Image(id: $0, data: ImageData(url: URL(fileURLWithPath: "car\($0)"), rating: .high, dateOfCreate: .distantPast, indexInCollection: $0)) })),
-        Gallery(id: 1, data: GalleryData(name: "Fallout", images: (1...8).map{ Image(id: $0, data: ImageData(url: URL(fileURLWithPath: "fallout\($0)"), rating: .high, dateOfCreate: .distantPast, indexInCollection: $0)) })),
-        Gallery(id: 2, data: GalleryData(name: "Stalker", images: (1...6).map{ Image(id: $0, data: ImageData(url: URL(fileURLWithPath: "stalker\($0)"), rating: .high, dateOfCreate: .distantPast, indexInCollection: $0)) }))
+        Gallery(id: 0, data: GalleryData(
+            name: "Fallout",
+            images: [
+                "https://u.kanobu.ru/editor/images/80/eb8e4568-6042-4129-9f8d-47be57bfb061.jpg",
+                "https://games.mail.ru/pre_1280x720_resize/hotbox/content_files/gallery/a5/d7/45b034b6.jpeg?quality=85",
+                "https://www.1c-interes.ru/upload/resize_src/e7/e7e8c698db3c12b2421a31a946ce76c5.jpg",
+                "https://www.ferra.ru/thumb/625x0/filters:quality(75)/imgs/2018/11/26/19/2801712/0891c67eb3e5e6ec569a1c51fd93b45538764465.jpg"
+                ].enumerated().map { idx, el in Image(id: idx, data: ImageData(url: URL(string: el)!, rating: .high, dateOfCreate: .distantPast, indexInCollection: idx)) }
+        ))
     ]
     
     private var recentlyDeletedGalleries: [Gallery] = []
@@ -107,9 +113,9 @@ class GalleryRamStorage: GalleryStoragable {
         completion(true)
     }
     
-    func createImage(_ imageData: ImageData, inGalleryId galleryId: Int, onPlaceWhereImageWithId takingPlaceImageId: Int, _ completion: (Bool, [Image]?) -> Void) {
+    func createImage(_ image: NewImage, inGalleryId galleryId: Int, onPlaceWhereImageWithId takingPlaceImageId: Int, _ completion: (Bool, [Image]?) -> Void) {
         if let index = galleries.firstIndex(where: { $0.id == galleryId }) {
-            let image = Image(id: ImageIdentifier.get(), data: imageData)
+            let image = Image(id: ImageIdentifier.get(), data: ImageData(url: image.url, rating: .veryLow, dateOfCreate: .distantPast, indexInCollection: 0))
             let insertionIndex = galleries[index].data.images.firstIndex(where: { $0.id == takingPlaceImageId })!
             galleries[index].data.images.insert(image, at: insertionIndex)
             completion(true, galleries[index].data.images)
@@ -161,6 +167,15 @@ class GalleryRamStorage: GalleryStoragable {
     
     func getRecentlyDeletedGalleries(_ completion: ([Gallery]) -> Void) {
         completion(recentlyDeletedGalleries)
+    }
+    
+    func deleteImages(byIds ids: [Int], inGalleryId galleryId: Int, _ completion: (Bool, [Image]?) -> Void) {
+        if let galleryIndex = galleries.firstIndex(where: { $0.id == galleryId }) {
+            let images = galleries[galleryIndex].data.images.enumerated().filter { (idx, _) in !ids.contains(idx) }.map { $1 }
+            galleries[galleryIndex].data.images = images
+            completion(true, images)
+        }
+        completion(false, nil)
     }
 }
 
