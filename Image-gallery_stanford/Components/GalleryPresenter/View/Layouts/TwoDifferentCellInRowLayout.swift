@@ -25,6 +25,7 @@ class TwoDifferentCellInRowLayout: UICollectionViewLayout {
     }
     private var itemSpacing: CGFloat = 2.0
     private var rowSpacing: CGFloat = 2.0
+    private var footerHeight: CGFloat = 50.0
     
     private var collectionViewContentHeight: CGFloat = .zero
     override var collectionViewContentSize: CGSize {
@@ -34,6 +35,12 @@ class TwoDifferentCellInRowLayout: UICollectionViewLayout {
     override func prepare() {
         var yShift = CGFloat.zero
         let itemsCount = collectionView!.numberOfItems(inSection: 0)
+        let footerAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, with: IndexPath(row: 0, section: 0))
+        footerAttributes.frame = CGRect(
+            origin: .init(x: 0, y: collectionView!.bounds.maxY - footerHeight),
+            size: .init(width: collectionView!.bounds.width, height: footerHeight)
+        )
+        cache.append(footerAttributes)
         for number in 0..<itemsCount {
             let attributes = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: number, section: 0))
             var frame = CGRect.zero

@@ -21,4 +21,11 @@ extension GalleryPresenterViewController: UICollectionViewDataSource {
         cell.isChooseModeOn = isChooseModeOn
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: GalleryFooterView.reuseIdentifier, for: indexPath) as! GalleryFooterView
+        footer.delegate = self
+        collectionFooterView = footer
+        return footer
+    }
 }

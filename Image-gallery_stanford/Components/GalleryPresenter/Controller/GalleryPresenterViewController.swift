@@ -13,17 +13,17 @@ class GalleryPresenterViewController: UIViewController, UICollectionViewDelegate
         didSet { self.presenter.subscribe(self) }
     }
     
+    unowned var collectionFooterView: GalleryFooterView!
+    
     var isChooseModeOn: Bool = false {
         didSet {
-            (collectionView.visibleCells as! [GalleryPresenterViewCell]).forEach { $0.isChooseModeOn = true }
+            (collectionView.visibleCells as! [GalleryPresenterViewCell]).forEach { $0.isChooseModeOn = !self.isChooseModeOn }
         }
     }
     
     var choosenImageIndices: Set<Int> = []
     
-    @IBOutlet var deleteImagesButton: UIBarButtonItem!
-    
-    @IBAction func onDeleteButtonTapped(_ sender: Any) {
+    func deleteImages() {
         presenter.deleteImages(byIndices: Array(choosenImageIndices))
     }
     
@@ -40,6 +40,11 @@ class GalleryPresenterViewController: UIViewController, UICollectionViewDelegate
             self.collectionView.dropDelegate = self
             self.collectionView.delegate = self
             self.collectionView.dragDelegate = self
+            self.collectionView.register(
+                GalleryFooterView.self,
+                forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                withReuseIdentifier: GalleryFooterView.reuseIdentifier
+            )
         }
     }
     

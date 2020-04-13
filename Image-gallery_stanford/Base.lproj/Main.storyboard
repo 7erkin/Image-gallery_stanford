@@ -109,12 +109,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="HGg-bW-BuU">
-                                <rect key="frame" x="0.0" y="88" width="414" height="716"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7db-sC-pjf">
                                     <size key="itemSize" width="250" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="30" height="46"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
@@ -166,51 +166,39 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="GalleryFooter" id="uwT-4U-ucY" customClass="GalleryFooterView" customModule="Image_gallery_stanford" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="146" width="414" height="46"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isImageManipulationModeOn" value="NO"/>
+                                    </userDefinedRuntimeAttributes>
+                                </collectionReusableView>
                             </collectionView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="yK9-PD-RQa">
                                 <rect key="frame" x="188.5" y="456.5" width="37" height="37"/>
                             </activityIndicatorView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Jzh-3y-GXl">
-                                <rect key="frame" x="10" y="819" width="394" height="32"/>
-                                <segments>
-                                    <segment title="По порядку добавления"/>
-                                    <segment title="По рейтингу"/>
-                                </segments>
-                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HGg-bW-BuU" secondAttribute="bottom" id="FGY-W0-u7d"/>
                             <constraint firstItem="yK9-PD-RQa" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="K2D-Zr-9H8"/>
-                            <constraint firstItem="Jzh-3y-GXl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="PG5-7C-faf"/>
-                            <constraint firstItem="Jzh-3y-GXl" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="RKq-Sc-IdY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HGg-bW-BuU" secondAttribute="trailing" id="RgA-BT-fPp"/>
-                            <constraint firstItem="Jzh-3y-GXl" firstAttribute="top" secondItem="HGg-bW-BuU" secondAttribute="bottom" constant="15" id="Wcn-1R-b8c"/>
                             <constraint firstItem="HGg-bW-BuU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dc6-Hy-0uH"/>
                             <constraint firstItem="yK9-PD-RQa" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="hNO-1Y-83N"/>
                             <constraint firstItem="HGg-bW-BuU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="iEf-H9-2SP"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Jzh-3y-GXl" secondAttribute="bottom" constant="12" id="n10-l8-cK8"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Jzh-3y-GXl" secondAttribute="trailing" constant="10" id="yRd-Ra-5l0"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="AcH-q4-rp3">
                         <nil key="title"/>
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="trash" id="1EQ-E7-ZdS">
-                                <connections>
-                                    <action selector="onDeleteButtonTapped:" destination="BYZ-38-t0r" id="TUA-se-BOS"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem systemItem="refresh" id="cuG-Zd-f5B">
-                                <connections>
-                                    <action selector="switchLayout:" destination="BYZ-38-t0r" id="fId-zv-OKq"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="cuG-Zd-f5B">
+                            <connections>
+                                <action selector="switchLayout:" destination="BYZ-38-t0r" id="fId-zv-OKq"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="HGg-bW-BuU" id="YPT-nA-S2T"/>
-                        <outlet property="deleteImagesButton" destination="1EQ-E7-ZdS" id="eS5-m4-LpK"/>
                         <outlet property="fetchingImagesIndicator" destination="yK9-PD-RQa" id="rLr-bq-0J7"/>
                         <segue destination="OAU-f0-O75" kind="show" identifier="ShowImage" id="VeX-a5-B1m"/>
                     </connections>

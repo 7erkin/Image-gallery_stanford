@@ -18,6 +18,7 @@ class StretchedLayout: UICollectionViewLayout {
     private var compressedCellSize: CGSize { .init(width: (collectionViewWidth - itemSpacing) / 2, height: (collectionViewHeight * 2 - 2 * rowSpacing) / 10) }
     private var itemSpacing: CGFloat = 2.0
     private var rowSpacing: CGFloat = 2.0
+    private var footerHeight: CGFloat = 50.0
     
     private var collectionViewContentHeight: CGFloat = .zero
     override var collectionViewContentSize: CGSize {
@@ -28,6 +29,14 @@ class StretchedLayout: UICollectionViewLayout {
         let xStretchedCellShifts = Array(stride(from: 0, to: collectionViewWidth, by: stretchedCellSize.width + itemSpacing))
         let xCompressedCellShifts = Array(stride(from: 0, to: collectionViewWidth, by: compressedCellSize.width + itemSpacing))
         var yShift: CGFloat = .zero
+        // repeat from layout to layout
+        let footerAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, with: IndexPath(row: 0, section: 0))
+        footerAttributes.frame = CGRect(
+            origin: .init(x: 0, y: collectionView!.bounds.maxY - footerHeight),
+            size: .init(width: collectionView!.bounds.width, height: footerHeight)
+        )
+        cache.append(footerAttributes)
+        //
         for number in (0..<collectionView!.numberOfItems(inSection: 0)) {
             let modNumber = number % 5
             let attributes = UICollectionViewLayoutAttributes(forCellWith: .init(item: number, section: 0))

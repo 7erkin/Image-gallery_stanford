@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension GalleryPresenterViewController: CellGestureDelegate {
     func tapHappened(sender: GalleryPresenterViewCell) {
@@ -26,6 +27,7 @@ extension GalleryPresenterViewController: CellGestureDelegate {
     func longPressHappened(sender: GalleryPresenterViewCell) {
         if !isChooseModeOn {
             isChooseModeOn = true
+            collectionFooterView.isImageManipulationModeOn = true
             sender.isChoosen = true
             let index = collectionView.indexPath(for: sender)!.row
             choosenImageIndices.insert(index)

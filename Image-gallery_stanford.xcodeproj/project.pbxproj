@@ -29,6 +29,9 @@
 		7CAE8E6E2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */; };
 		7CAE8E702443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */; };
 		7CAE8E722443AA7700D84DE3 /* +UICollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E712443AA7700D84DE3 /* +UICollectionViewDataSource.swift */; };
+		7CAE8E742443B50200D84DE3 /* GalleryFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E732443B50200D84DE3 /* GalleryFooterView.swift */; };
+		7CAE8E762443D76500D84DE3 /* NoCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E752443D76500D84DE3 /* NoCache.swift */; };
+		7CAE8E782443E5E600D84DE3 /* +GalleryFooterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE8E772443E5E600D84DE3 /* +GalleryFooterDelegate.swift */; };
 		7CCDC3A1243FD5200009A439 /* GalleryStoragable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A0243FD5200009A439 /* GalleryStoragable.swift */; };
 		7CCDC3A5243FD6360009A439 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A4243FD6360009A439 /* AppContext.swift */; };
 		7CCDC3AA24412DD10009A439 /* StretchedLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDC3A924412DD10009A439 /* StretchedLayout.swift */; };
@@ -63,6 +66,9 @@
 		7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDragDelegate.swift"; sourceTree = "<group>"; };
 		7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDropDelegate.swift"; sourceTree = "<group>"; };
 		7CAE8E712443AA7700D84DE3 /* +UICollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+UICollectionViewDataSource.swift"; sourceTree = "<group>"; };
+		7CAE8E732443B50200D84DE3 /* GalleryFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryFooterView.swift; sourceTree = "<group>"; };
+		7CAE8E752443D76500D84DE3 /* NoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCache.swift; sourceTree = "<group>"; };
+		7CAE8E772443E5E600D84DE3 /* +GalleryFooterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "+GalleryFooterDelegate.swift"; sourceTree = "<group>"; };
 		7CCDC3A0243FD5200009A439 /* GalleryStoragable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryStoragable.swift; sourceTree = "<group>"; };
 		7CCDC3A4243FD6360009A439 /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		7CCDC3A924412DD10009A439 /* StretchedLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchedLayout.swift; sourceTree = "<group>"; };
@@ -147,6 +153,7 @@
 			children = (
 				7CCDC3A624411F870009A439 /* Layouts */,
 				7C60592E241D90C600E729AA /* GalleryPresenterViewCell.swift */,
+				7CAE8E732443B50200D84DE3 /* GalleryFooterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -157,6 +164,7 @@
 				7CAE8E592442972C00D84DE3 /* support */,
 				7CD2A082241D8092004FC41F /* GalleryPresenterViewController.swift */,
 				7CAE8E692443A9B200D84DE3 /* +CellGestureDelegate.swift */,
+				7CAE8E772443E5E600D84DE3 /* +GalleryFooterDelegate.swift */,
 				7CAE8E6B2443A9D000D84DE3 /* +GalleryPresenterObserver.swift */,
 				7CAE8E6D2443AA2400D84DE3 /* +UICollectionViewDragDelegate.swift */,
 				7CAE8E6F2443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift */,
@@ -204,6 +212,7 @@
 			children = (
 				7CAE8E652442A57300D84DE3 /* ImageCachable.swift */,
 				7CAE8E672442A83800D84DE3 /* ImageRamCache.swift */,
+				7CAE8E752443D76500D84DE3 /* NoCache.swift */,
 			);
 			path = Caches;
 			sourceTree = "<group>";
@@ -350,6 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CAE8E6C2443A9D000D84DE3 /* +GalleryPresenterObserver.swift in Sources */,
+				7CAE8E762443D76500D84DE3 /* NoCache.swift in Sources */,
 				7CAE8E562442770100D84DE3 /* TwoDifferentCellInRowLayout.swift in Sources */,
 				7C24E6092426E3DE00552C2F /* GalleryPresenter.swift in Sources */,
 				7C24E60D242AB04900552C2F /* UIImage+.swift in Sources */,
@@ -363,6 +373,8 @@
 				7CCDC3A1243FD5200009A439 /* GalleryStoragable.swift in Sources */,
 				7CAE8E6A2443A9B200D84DE3 /* +CellGestureDelegate.swift in Sources */,
 				7CAE8E702443AA5A00D84DE3 /* +UICollectionViewDropDelegate.swift in Sources */,
+				7CAE8E742443B50200D84DE3 /* GalleryFooterView.swift in Sources */,
+				7CAE8E782443E5E600D84DE3 /* +GalleryFooterDelegate.swift in Sources */,
 				7CCDC3A5243FD6360009A439 /* AppContext.swift in Sources */,
 				7C605935241E672400E729AA /* GalleriesEditorViewController.swift in Sources */,
 				7C605931241E36B000E729AA /* URL+.swift in Sources */,
